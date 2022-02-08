@@ -16,7 +16,11 @@ action_beep_check_all = {
     ],
 }
 
-beep = {
+util_beep = {
     "count": 20,
     "delay": 0.1,
+}
+
+action_join_and_leave_with_user = {
+    "user_id": "393",
 }

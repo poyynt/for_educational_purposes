@@ -20,8 +20,8 @@ def get_bn_id_from_script(script):
 
 
 def beep():
-    from config import beep
+    from config import util_beep
     from time import sleep
-    for _ in range(beep["count"]):
+    for _ in range(util_beep["count"]):
         print("\a")
-        sleep(beep["delay"])
+        sleep(util_beep["delay"])
