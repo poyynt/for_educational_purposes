@@ -17,3 +17,11 @@ def get_bn_id_from_script(script):
     script = script[script.find("broker.init") + 12:]
     script = script[:script.find(";") - 1]
     return json.loads(script)["bigbluebuttonbnid"]
+
+
+def beep():
+    from config import beep
+    from time import sleep
+    for _ in range(beep["count"]):
+        print("\a")
+        sleep(beep["delay"])
