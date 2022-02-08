@@ -3,15 +3,16 @@ class SessionManager:
     _password = None
     base_url = None
     login_path = None
-    check_path = "my/"
+    check_path = None
     session = None
     _sesskey = None
 
-    def __init__(self, username, password, base_url, login_path):
+    def __init__(self, username, password, base_url, login_path, check_path):
         self._username = username
         self._password = password
         self.base_url = base_url
         self.login_path = login_path
+        self.check_path = check_path
         import requests
         self.session = requests.Session()
 
@@ -52,16 +53,25 @@ class SessionManager:
         return self.session.get(
             self.base_url + path, params=params, verify=False)
 
+    def head(self, path, params=None):
+        if not self._is_logged_in():
+            self._login()
+        return self.session.head(
+            self.base_url + path, params=params, verify=False)
+
 
 class CourseManager:
     session_manager = None
     course_base_path = None
-    ajax_url = None
+    ajax_path = None
+    view_path = None
 
-    def __init__(self, session_manager, course_base_path, ajax_url):
+    def __init__(
+            self, session_manager, course_base_path, ajax_path, view_path):
         self.session_manager = session_manager
         self.course_base_path = course_base_path
-        self.ajax_url = ajax_url
+        self.ajax_path = ajax_path
+        self.view_path = view_path
 
     def _get_course_id(self, course_number):
         req = self.session_manager.get(
@@ -86,7 +96,7 @@ class CourseManager:
         bn_id = self._get_bn_id(course_number)
         sesskey = self.session_manager.get_sesskey()
         req = self.session_manager.get(
-            self.ajax_url, params={
+            self.ajax_path, params={
                 "sesskey": sesskey,
                 "id": course_id,
                 "action": "meeting_info",
@@ -96,3 +106,12 @@ class CourseManager:
             })
         import json
         return json.loads(req.text[2:-2])
+
+    def get_join_url(self, course_number):
+        meeting_info = self.get_meeting_info(course_number)
+        raw_url = meeting_info["status"]["join_url"]
+        from urllib.parse import urlsplit, parse_qsl
+        splitted = urlsplit(raw_url)
+        params = dict(parse_qsl(splitted.query))
+        req = self.session_manager.head(self.view_path, params=params)
+        return req.next.url
