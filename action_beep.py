@@ -1,6 +1,6 @@
 import warnings
 from watch import Watchdog
-from config import beep
+from utils import beep
 
 warnings.filterwarnings("ignore")
 
