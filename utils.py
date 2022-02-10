@@ -23,5 +23,5 @@ def beep():
     from config import util_beep
     from time import sleep
     for _ in range(util_beep["count"]):
-        print("\a")
+        print("\a", end="")
         sleep(util_beep["delay"])
