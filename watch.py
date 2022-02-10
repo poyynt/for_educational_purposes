@@ -70,8 +70,8 @@ class Watchdog:
             self.lock.acquire()
             meeting_info = self.course_manager.get_meeting_info(
                 self.course_number)
-            join_url = self.course_manager.get_join_url(self.course_number)
             if self.checker(meeting_info):
+                join_url = self.course_manager.get_join_url(self.course_number)
                 self.callback(meeting_info, self.timer, join_url)
         finally:
             self.lock.release()
