@@ -1,4 +1,6 @@
 import warnings
+import sys
+import threading
 from watch import Watchdog
 from utils import beep
 
@@ -10,10 +12,11 @@ def check(info):
 
 
 def callback(info, timer, join_url):
+    timer.stop()
     beep()
     print("Join URL:")
     print(join_url)
-    timer.stop()
+    sys.exit(0)
 
 
 Watchdog(
@@ -23,7 +26,7 @@ Watchdog(
     interval=30
 ).start()
 
-while True:
+while threading.active_count() > 1:
     try:
         pass
     except KeyboardInterrupt:
