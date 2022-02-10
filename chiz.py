@@ -33,16 +33,22 @@ class SessionManager:
         else:
             self.session = requests.Session()
 
-    def __del__(self):
-        import pickle
-        with open(".chiz_session.pickle", "wb") as f:
-            pickle.dump(self.session, f)
-
     def _is_logged_in(self):
         req = self.session.get(self.base_url + self.check_path, verify=False)
         if req.url == self.base_url + self.check_path:
             return True
         return False
+
+    def _save_sesskey(self):
+        if not self._is_logged_in():
+            self._login()
+            return
+        req = self.session.get(self.base_url + self.check_path, verify=False)
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(req.text, "html.parser")
+        from utils import get_cfg_from_script
+        config_script = soup.find_all("script")[1].contents[0]
+        self._sesskey = get_cfg_from_script(config_script)["sesskey"]
 
     def _login(self):
         if self._is_logged_in():
@@ -63,11 +69,14 @@ class SessionManager:
         from utils import get_cfg_from_script
         config_script = soup.find_all("script")[1].contents[0]
         self._sesskey = get_cfg_from_script(config_script)["sesskey"]
+        import pickle
+        with open(".chiz_session.pickle", "wb") as f:
+            pickle.dump(self.session, f)
         return
 
     def get_sesskey(self):
-        if not self._is_logged_in():
-            self._login()
+        if self._sesskey is None:
+            self._save_sesskey()
         return self._sesskey
 
     def get(self, path, params=None):
