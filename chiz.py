@@ -25,7 +25,18 @@ class SessionManager:
         self.login_path = login_path
         self.check_path = check_path
         import requests
-        self.session = requests.Session()
+        import os
+        import pickle
+        if os.path.exists(".chiz_session.pickle"):
+            with open(".chiz_session.pickle", "rb") as f:
+                self.session = pickle.load(f)
+        else:
+            self.session = requests.Session()
+
+    def __del__(self):
+        import pickle
+        with open(".chiz_session.pickle", "wb") as f:
+            pickle.dump(self.session, f)
 
     def _is_logged_in(self):
         req = self.session.get(self.base_url + self.check_path, verify=False)
