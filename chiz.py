@@ -1,3 +1,14 @@
+def singleton(cls):
+    instances = {}
+
+    def getinstance(*args, **kwargs):
+        if cls not in instances:
+            instances[cls] = cls(*args, **kwargs)
+        return instances[cls]
+    return getinstance
+
+
+@singleton
 class SessionManager:
     _username = None
     _password = None
@@ -44,8 +55,9 @@ class SessionManager:
         return
 
     def get_sesskey(self):
-        if self._is_logged_in():
-            return self._sesskey
+        if not self._is_logged_in():
+            self._login()
+        return self._sesskey
 
     def get(self, path, params=None):
         if not self._is_logged_in():
@@ -60,6 +72,7 @@ class SessionManager:
             self.base_url + path, params=params, verify=False)
 
 
+@singleton
 class CourseManager:
     session_manager = None
     course_base_path = None
