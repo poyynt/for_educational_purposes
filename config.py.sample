@@ -1,7 +1,7 @@
 username = "YOUR_USERNAME"
 password = "YOUR_PASSWORD"
 
-base_url = "https://lms.helli3.ir/"
+base_url = "https://moodle.example.com/"
 login_path = "login/index.php"
 check_path = "my/"
 course_base_path = "mod/bigbluebuttonbn/view.php"
@@ -10,9 +10,7 @@ view_path = "mod/bigbluebuttonbn/bbb_view.php"
 
 action_beep_check_all = {
     "course_numbers": [
-        1253, 1254, 1256, 1255, 1257, 1258, 1259, 1260, 1261,
-        1734, 1444,
-        1667, 1665, 1283, 1656, 1655, 1285, 1302, 1284, 1642,
+        1337,
     ],
 }
 
@@ -22,5 +20,5 @@ util_beep = {
 }
 
 action_join_and_leave_with_user = {
-    "user_id": "393",
+    "user_id": "69420",
 }
