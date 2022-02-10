@@ -1,3 +1,3 @@
 config.py
 __pycache__/
-.geckodriver.log
+geckodriver.log
