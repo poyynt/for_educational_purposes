@@ -1,5 +1,8 @@
+import sys
 import threading
 import time
+from chiz import CourseManager, SessionManager
+import config
 
 
 class RepeatedTimer(object):
@@ -38,17 +41,15 @@ class Watchdog:
     course_number = None
     interval = None
     timer = None
+    course_manager = None
+    lock = None
 
     def __init__(self, course_number, checker, callback, interval=15):
         self.checker = checker
         self.callback = callback
         self.course_number = course_number
         self.interval = interval
-
-    def check(self):
-        from chiz import CourseManager, SessionManager
-        import config
-        course_manager = CourseManager(
+        self.course_manager = CourseManager(
             session_manager=SessionManager(
                 username=config.username,
                 password=config.password,
@@ -60,10 +61,20 @@ class Watchdog:
             ajax_path=config.ajax_path,
             view_path=config.view_path,
         )
-        meeting_info = course_manager.get_meeting_info(self.course_number)
-        join_url = course_manager.get_join_url(self.course_number)
-        if self.checker(meeting_info):
-            self.callback(meeting_info, self.timer, join_url)
+        self.lock = threading.Lock()
+
+    def check(self):
+        if self.lock.locked():
+            return sys.exit(0)
+        try:
+            self.lock.acquire()
+            meeting_info = self.course_manager.get_meeting_info(
+                self.course_number)
+            join_url = self.course_manager.get_join_url(self.course_number)
+            if self.checker(meeting_info):
+                self.callback(meeting_info, self.timer, join_url)
+        finally:
+            self.lock.release()
 
     def start(self):
         self.timer = RepeatedTimer(self.interval, self.check)
