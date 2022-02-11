@@ -40,10 +40,10 @@ class SessionManager:
         return False
 
     def _save_sesskey(self):
-        if not self._is_logged_in():
+        req = self.session.get(self.base_url + self.check_path, verify=False)
+        if req.url == self.base_url + self.login_path:
             self._login()
             return
-        req = self.session.get(self.base_url + self.check_path, verify=False)
         from bs4 import BeautifulSoup
         soup = BeautifulSoup(req.text, "html.parser")
         from utils import get_cfg_from_script
@@ -80,16 +80,22 @@ class SessionManager:
         return self._sesskey
 
     def get(self, path, params=None):
-        if not self._is_logged_in():
-            self._login()
-        return self.session.get(
+        req = self.session.get(
             self.base_url + path, params=params, verify=False)
+        if req.url == self.base_url + self.login_path:
+            self._login()
+            return self.session.get(
+                self.base_url + path, params=params, verify=False)
+        return req
 
     def head(self, path, params=None):
-        if not self._is_logged_in():
-            self._login()
-        return self.session.head(
+        req = self.session.head(
             self.base_url + path, params=params, verify=False)
+        if req.next.url == self.base_url + self.login_path:
+            self._login()
+            return self.session.head(
+                self.base_url + path, params=params, verify=False)
+        return req
 
 
 @singleton
