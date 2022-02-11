@@ -54,14 +54,16 @@ def callback(info, timer, join_url):
         ).click()
     except TimeoutException:
         pass
-    firefox.implicitly_wait(30)
-    WebDriverWait(firefox, 60 * 90).until_not(
-        EC.presence_of_element_located(
-            (By.XPATH,
-             f"//*[text()='{target_user_name}']"
-             )
+    firefox.implicitly_wait(5)
+    for _ in range(16):
+        WebDriverWait(firefox, 60 * 90).until_not(
+            EC.presence_of_element_located(
+                (By.XPATH,
+                 f"//*[text()='{target_user_name}']"
+                 )
+            )
         )
-    )
+        time.sleep(.5)
     print("Target user has left, enabling watchdog and leaving.",
           f"t={time.time()}")
     firefox.quit()
