@@ -22,3 +22,7 @@ util_beep = {
 action_join_and_leave_with_user = {
     "user_id": "69420",
 }
+
+action_join_on_start = {
+    "random_range": [8, 128],
+}
