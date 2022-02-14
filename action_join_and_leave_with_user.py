@@ -65,7 +65,9 @@ def callback(info, timer, join_url):
                      )
                 )
             )
+            print(".", end="")
             time.sleep(.5)
+        print()
         print("Target user has left, enabling watchdog and leaving.",
               f"t={time.time()}")
         firefox.quit()

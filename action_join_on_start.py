@@ -53,7 +53,9 @@ def callback(info, timer, join_url):
                     (By.CSS_SELECTOR, ".icon-bbb-group_chat")
                 )
             )
+            print(".", end="")
             time.sleep(.5)
+        print()
         print("Meeting has ended, enabling watchdog and quitting.",
               f"t={time.time()}")
         firefox.quit()
