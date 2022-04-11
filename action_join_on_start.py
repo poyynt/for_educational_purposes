@@ -54,7 +54,6 @@ def callback(info, timer, join_url):
                     (By.CSS_SELECTOR, ".icon-bbb-group_chat")
                 )
             )
-            print(".", end="")
             sys.stdout.write(".")
             sys.stdout.flush()
             time.sleep(.5)
