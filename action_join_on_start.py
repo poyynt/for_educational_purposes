@@ -1,3 +1,4 @@
+import sys
 import warnings
 from watch import Watchdog
 from config import action_join_on_start
@@ -54,6 +55,8 @@ def callback(info, timer, join_url):
                 )
             )
             print(".", end="")
+            sys.stdout.write(".")
+            sys.stdout.flush()
             time.sleep(.5)
         print()
         print("Meeting has ended, enabling watchdog and quitting.",
